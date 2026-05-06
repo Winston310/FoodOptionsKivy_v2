@@ -1,0 +1,327 @@
+#:kivy 2.3.0
+#:import dp kivy.metrics.dp
+
+<TitleLabel@Label>:
+    color: 0.13, 0.16, 0.20, 1
+    bold: True
+    font_size: dp(28)
+    halign: "center"
+    valign: "middle"
+    text_size: self.size
+
+<SubtitleLabel@Label>:
+    color: 0.37, 0.43, 0.50, 1
+    font_size: dp(15)
+    halign: "center"
+    valign: "middle"
+    text_size: self.size
+
+<PrimaryButton@Button>:
+    background_normal: ""
+    background_color: 0.17, 0.55, 0.42, 1
+    color: 1, 1, 1, 1
+    bold: True
+    font_size: dp(17)
+
+<SecondaryButton@Button>:
+    background_normal: ""
+    background_color: 0.92, 0.95, 0.93, 1
+    color: 0.14, 0.23, 0.20, 1
+    bold: True
+    font_size: dp(16)
+
+<DangerButton@Button>:
+    background_normal: ""
+    background_color: 0.78, 0.24, 0.22, 1
+    color: 1, 1, 1, 1
+    bold: True
+    font_size: dp(15)
+
+<FormInput@TextInput>:
+    multiline: False
+    size_hint_y: None
+    height: dp(46)
+    font_size: dp(16)
+    padding: dp(12), dp(12)
+    background_normal: ""
+    background_active: ""
+    background_color: 1, 1, 1, 1
+    foreground_color: 0.13, 0.16, 0.20, 1
+    cursor_color: 0.17, 0.55, 0.42, 1
+
+<ScreenCard@BoxLayout>:
+    orientation: "vertical"
+    padding: dp(16)
+    spacing: dp(12)
+    canvas.before:
+        Color:
+            rgba: 0.96, 0.98, 0.96, 1
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+<FoodRow>:
+    orientation: "vertical"
+    padding: dp(12)
+    spacing: dp(8)
+    size_hint_y: None
+    height: dp(156)
+    canvas.before:
+        Color:
+            rgba: 1, 1, 1, 1
+        RoundedRectangle:
+            pos: self.pos
+            size: self.size
+            radius: [dp(18),]
+    Label:
+        text: root.title_text
+        color: 0.11, 0.16, 0.14, 1
+        bold: True
+        font_size: dp(18)
+        size_hint_y: None
+        height: dp(28)
+        halign: "left"
+        valign: "middle"
+        text_size: self.size
+    Label:
+        text: root.last_text
+        color: 0.41, 0.47, 0.44, 1
+        font_size: dp(13)
+        size_hint_y: None
+        height: dp(22)
+        halign: "left"
+        valign: "middle"
+        text_size: self.size
+    Label:
+        text: root.macro_text
+        color: 0.17, 0.55, 0.42, 1
+        bold: True
+        font_size: dp(14)
+        size_hint_y: None
+        height: dp(26)
+        halign: "left"
+        valign: "middle"
+        text_size: self.size
+    BoxLayout:
+        spacing: dp(8)
+        size_hint_y: None
+        height: dp(42)
+        PrimaryButton:
+            text: "Съел сегодня"
+            on_press: root.mark_as_eaten()
+        SecondaryButton:
+            text: root.photo_text
+            on_press: root.open_camera()
+
+<EmptyRow>:
+    orientation: "vertical"
+    size_hint_y: None
+    height: dp(120)
+    padding: dp(14)
+    canvas.before:
+        Color:
+            rgba: 1, 1, 1, 1
+        RoundedRectangle:
+            pos: self.pos
+            size: self.size
+            radius: [dp(18),]
+    Label:
+        text: "Список пуст. Добавь первое блюдо."
+        color: 0.22, 0.27, 0.24, 1
+        font_size: dp(17)
+        halign: "center"
+        valign: "middle"
+        text_size: self.size
+
+ScreenManager:
+    MenuScreen:
+        name: "menu"
+    FoodListScreen:
+        name: "list_food"
+    AddFoodScreen:
+        name: "add_food"
+    CameraScreen:
+        name: "camera"
+
+<MenuScreen>:
+    ScreenCard:
+        TitleLabel:
+            text: "Дневник питания"
+            size_hint_y: None
+            height: dp(72)
+        SubtitleLabel:
+            text: "Очередь блюд, БЖУ и фото тарелок"
+            size_hint_y: None
+            height: dp(40)
+        BoxLayout:
+            orientation: "vertical"
+            padding: dp(14)
+            spacing: dp(8)
+            size_hint_y: None
+            height: dp(112)
+            canvas.before:
+                Color:
+                    rgba: 1, 1, 1, 1
+                RoundedRectangle:
+                    pos: self.pos
+                    size: self.size
+                    radius: [dp(18),]
+            Label:
+                id: summary_label
+                text: ""
+                color: 0.13, 0.16, 0.20, 1
+                bold: True
+                font_size: dp(15)
+                halign: "center"
+                valign: "middle"
+                text_size: self.size
+        PrimaryButton:
+            text: "Открыть очередь блюд"
+            on_press: root.manager.current = "list_food"
+        SecondaryButton:
+            text: "Добавить блюдо и БЖУ"
+            on_press: root.manager.current = "add_food"
+        DangerButton:
+            text: "Сбросить список на 50 блюд"
+            on_press: app.reset_default_foods()
+
+<FoodListScreen>:
+    ScreenCard:
+        BoxLayout:
+            size_hint_y: None
+            height: dp(48)
+            spacing: dp(8)
+            SecondaryButton:
+                text: "< Меню"
+                size_hint_x: 0.28
+                on_press: root.manager.current = "menu"
+            Label:
+                text: "Очередь рациона"
+                color: 0.13, 0.16, 0.20, 1
+                bold: True
+                font_size: dp(21)
+                halign: "left"
+                valign: "middle"
+                text_size: self.size
+        Label:
+            id: total_label
+            text: ""
+            color: 0.17, 0.55, 0.42, 1
+            bold: True
+            font_size: dp(14)
+            size_hint_y: None
+            height: dp(44)
+            halign: "left"
+            valign: "middle"
+            text_size: self.size
+        SubtitleLabel:
+            text: "Нажми «Съел сегодня», и блюдо уйдёт в конец очереди."
+            size_hint_y: None
+            height: dp(42)
+        ScrollView:
+            do_scroll_x: False
+            GridLayout:
+                id: food_list
+                cols: 1
+                spacing: dp(10)
+                size_hint_y: None
+                height: self.minimum_height
+
+<AddFoodScreen>:
+    ScreenCard:
+        BoxLayout:
+            size_hint_y: None
+            height: dp(48)
+            spacing: dp(8)
+            SecondaryButton:
+                text: "< Меню"
+                size_hint_x: 0.28
+                on_press: root.manager.current = "menu"
+            Label:
+                text: "Новое блюдо"
+                color: 0.13, 0.16, 0.20, 1
+                bold: True
+                font_size: dp(21)
+                halign: "left"
+                valign: "middle"
+                text_size: self.size
+        SubtitleLabel:
+            text: "Заполни калории и БЖУ на одну порцию."
+            size_hint_y: None
+            height: dp(36)
+        FormInput:
+            id: name_input
+            hint_text: "Название блюда"
+        FormInput:
+            id: calories_input
+            hint_text: "Калории, ккал"
+            input_filter: "float"
+        FormInput:
+            id: protein_input
+            hint_text: "Белки, г"
+            input_filter: "float"
+        FormInput:
+            id: fat_input
+            hint_text: "Жиры, г"
+            input_filter: "float"
+        FormInput:
+            id: carbs_input
+            hint_text: "Углеводы, г"
+            input_filter: "float"
+        PrimaryButton:
+            text: "Сохранить блюдо"
+            size_hint_y: None
+            height: dp(52)
+            on_press: root.add_food()
+        Label:
+            id: result_label
+            text: ""
+            color: 0.13, 0.16, 0.20, 1
+            font_size: dp(15)
+            halign: "center"
+            valign: "top"
+            text_size: self.size
+
+<CameraScreen>:
+    ScreenCard:
+        BoxLayout:
+            size_hint_y: None
+            height: dp(48)
+            spacing: dp(8)
+            SecondaryButton:
+                text: "< Очередь"
+                size_hint_x: 0.32
+                on_press: root.manager.current = "list_food"
+            Label:
+                id: camera_title
+                text: "Фото"
+                color: 0.13, 0.16, 0.20, 1
+                bold: True
+                font_size: dp(20)
+                halign: "left"
+                valign: "middle"
+                text_size: self.size
+        BoxLayout:
+            id: camera_holder
+            canvas.before:
+                Color:
+                    rgba: 0.08, 0.10, 0.10, 1
+                RoundedRectangle:
+                    pos: self.pos
+                    size: self.size
+                    radius: [dp(18),]
+        Label:
+            id: camera_status
+            text: ""
+            color: 0.13, 0.16, 0.20, 1
+            font_size: dp(14)
+            size_hint_y: None
+            height: dp(54)
+            halign: "center"
+            valign: "middle"
+            text_size: self.size
+        PrimaryButton:
+            text: "Сделать фото"
+            size_hint_y: None
+            height: dp(54)
+            on_press: root.capture_photo()
